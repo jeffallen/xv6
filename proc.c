@@ -159,6 +159,7 @@ sharedalloc()
     release(&sharedtable.lock);
     return 0;
   }
+  memset(mem, 0, PGSIZE);
 
   sh = &sharedtable.shared[i];
   sh->refcount = 1;

@@ -1602,6 +1602,7 @@ sharedtest()
 {
   int i;
   char *sh;
+  printf(1, "shared test\n");
 
   sh = (char *)shared();
   if (!sh) {
@@ -1610,27 +1611,31 @@ sharedtest()
   }
 
   if (fork() == 0) {
-    printf(1, "pid child: %d\n", getpid());
+    // this is the child: check the memory is virgin and then write to it
+    int i;
+    for (i = 0; i < 4096; i++) {
+      if (sh[i] != 0) {
+        printf(2, "shared: memory not zeros\n");
+        exit();
+      }
+    }
     strcpy(sh, "hello world");
     exit();
   } else {
     int pid;
-    printf(1, "pid parent: %d\n", getpid());
-    while (i < 10000) {
+    while (i < 1000000) {
       if (strcmp(sh, "hello world") == 0) {
-        printf(2, "shared: ok after %d checks\n", i);
+        printf(2, "shared ok after %d checks\n", i);
         break;
       }
       i++;
-      // yield and let the other guy run
-      sleep(0);
     }
-    if (i == 10000) {
+    if (i == 1000000) {
       printf(2, "shared: not ok after %d checks\n", i);
+      exit();
     }
 
     pid = wait();
-    printf(1, "parent reaped pid %d\n", pid);
   }
 }
 
@@ -1669,6 +1674,7 @@ main(int argc, char *argv[])
   pipe1();
   preempt();
   exitwait();
+  sharedtest();
 
   rmdot();
   fourteen();
@@ -1687,7 +1693,6 @@ main(int argc, char *argv[])
   bigdir(); // slow
 
   exectest();
-  sharedtest();
 
   exit();
 }
