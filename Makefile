@@ -150,7 +150,9 @@ mkfs: mkfs.c fs.h
 
 UPROGS=\
 	_cat\
+	_crash\
 	_echo\
+	_factor\
 	_forktest\
 	_grep\
 	_hello\
@@ -159,6 +161,7 @@ UPROGS=\
 	_ln\
 	_ls\
 	_mkdir\
+	_null\
 	_rm\
 	_sh\
 	_stressfs\
