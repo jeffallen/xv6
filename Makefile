@@ -228,6 +228,19 @@ qemu-nox-gdb: fs.img xv6.img .gdbinit
 	@echo "*** Now run 'gdb'." 1>&2
 	$(QEMU) -nographic $(QEMUOPTS) -S $(QEMUGDB)
 
+# the dd below stretches the fs.img out so it is large enough not to
+# cause VBox to give an error
+fs.vdi: fs.img
+	rm -f fs.vdi
+	dd if=/dev/zero count=10000 >> fs.img
+	VBoxManage convertfromraw fs.img fs.vdi
+
+xv6.vdi: xv6.img
+	rm -f xv6.vdi
+	VBoxManage convertfromraw xv6.img xv6.vdi
+
+vbox: xv6.vdi fs.vdi
+
 # CUT HERE
 # prepare dist for students
 # after running make dist, probably want to
