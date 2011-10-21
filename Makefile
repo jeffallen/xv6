@@ -164,6 +164,7 @@ UPROGS=\
 	_null\
 	_rm\
 	_sh\
+	_share\
 	_stressfs\
 	_usertests\
 	_wc\

@@ -82,6 +82,14 @@ exec(char *path, char **argv)
       last = s+1;
   safestrcpy(proc->name, last, sizeof(proc->name));
 
+  // hook up the old shared memory to the new addr space
+  // (no need to change refcount, because the old ref goes away with
+  // this exec, so it's +1 then -1 => 0 change
+  if (proc->shared) {
+    extern void mappages(pde_t *pgdir, void *va, uint size, uint pa, int perm);
+    mappages(pgdir, (char *)SHARED_V, PGSIZE, v2p(proc->shared->page), PTE_W|PTE_U);
+  }
+
   // Commit to the user image.
   oldpgdir = proc->pgdir;
   proc->pgdir = pgdir;
