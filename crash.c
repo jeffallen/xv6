@@ -5,7 +5,7 @@
 int
 main(int argc, char *argv[])
 {
-  char *buf = (char *)-1;
+  char *buf = 0;
   buf[0] = 'a';
   exit();
 }
